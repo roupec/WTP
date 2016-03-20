@@ -1,0 +1,59 @@
+# 01 - Experiment Header
+# ======================
+#  
+
+ExperimentSerialNumber  <-   c("C000_0006")
+ExperimentVersion       <-   c("V1")
+ExperimentDataSet       <-   c("C000_PUMP_STATION_192.168.99.222")
+ExperimentName          <-   c("000-Generic-Stats/0006_PUMP_STATION")
+ExperimentalComputer    <-   Sys.info()[["nodename"]]
+ExperimentDateStart     <-   Sys.time()
+
+EXPERIMENT <- data.frame(ExperimentSerialNumber, 
+                         ExperimentVersion,
+                         ExperimentDataSet,
+                         ExperimentName,
+                         ExperimentalComputer,
+                         ExperimentDateStart,
+                         EzperimentDateEnd )
+
+### 100.001 - Libraries Loading ###
+
+library(ggplot2)
+
+## Adapt to yout needs:
+working_directory <- c("/Users/C000-Generic-Stats/0006-Water_treatment/00 - DATA")
+setwd(working_directory)
+list.files()
+
+##########################################
+### Loading data #########################
+##########################################
+
+WATER_LEVEL <- read.csv ("data.csv",header=TRUE)
+WATER_LEVEL$Time_Formated <- strptime(WATER_LEVEL$Time,format='%m/%d/%y %H:%M:%S')
+
+###########################################
+### Printing data #########################
+###########################################
+
+gg <- ggplot(data= WATER_LEVEL,aes(WATER_LEVEL$Time_Formated,
+                         WATER_LEVEL$L1  )) 
+gg <- gg +   geom_line() 
+gg <- gg + ggtitle(c('Output Level of Water Treatment Plant'))
+gg <- gg + labs(x=NULL, y=NULL, title=c('Output Level of Water Treatment Plant'))
+gg <- gg + theme_bw(base_family="Helvetica")
+gg <- gg + ylab("Water Level [%]") 
+gg <- gg + xlab("Date & Time") 
+gg <- gg + theme(panel.grid.major=element_line(size = 0.5),
+                   axis.text.x=element_text(angle = 90, hjust = 0.5))
+gg
+
+#############################################
+### Save chart ##############################
+#############################################
+
+ExperimentDateStart     <-   Sys.time()
+file_name <- paste(c('PUMP STATION'),ExperimentSerialNumber,c('-'),ExperimentDateStart,c('.png'))
+ggsave(file_name)
+

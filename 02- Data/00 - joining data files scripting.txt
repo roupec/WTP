@@ -1,0 +1,2 @@
+cat 00_HEAD.csv > data.csv; 
+cat 192* |grep -v "Time" >> data.csv 
